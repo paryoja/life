@@ -2,7 +2,7 @@ from graphene import ObjectType, Schema, relay
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
-from .models import Account, Bank, Money, Transaction
+from .models import Account, Bank, Transaction
 
 
 class BankNode(DjangoObjectType):
@@ -22,6 +22,9 @@ class AccountNode(DjangoObjectType):
         }
         interfaces = (relay.Node,)
 
+    def resolve_balance(parent, info):
+        return parent.balance.amount
+
 
 class TransactionNode(DjangoObjectType):
     class Meta:
@@ -29,12 +32,14 @@ class TransactionNode(DjangoObjectType):
         filter_fields = {"account": ["exact"]}
         interfaces = (relay.Node,)
 
+    def resolve_balance(parent, info):
+        return parent.balance.amount
 
-class MoneyNode(DjangoObjectType):
-    class Meta:
-        model = Money
-        filter_fields = ["amount"]
-        interfaces = (relay.Node,)
+    def resolve_transaction_from_amount(parent, info):
+        return parent.transaction_from_amount.amount
+
+    def resolve_transaction_to_amount(parent, info):
+        return parent.transaction_to_amount.amount
 
 
 class Query(ObjectType):

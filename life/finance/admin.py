@@ -12,10 +12,6 @@ class AccountInline(admin.TabularInline):
     model = models.Account
 
 
-class MoneyInline(admin.TabularInline):
-    model = models.Money
-
-
 class TransactionInline(admin.TabularInline):
     model = models.Transaction
 
@@ -23,13 +19,14 @@ class TransactionInline(admin.TabularInline):
 # Admins
 @admin.register(models.Bank)
 class BankAdmin(admin.ModelAdmin):
-    inline = [AccountInline, MoneyInline]
+    inline = [AccountInline]
 
 
 @admin.register(models.Account)
 class AccountAdmin(admin.ModelAdmin):
     list_display = (
         "account_number",
+        "description",
         "open_date",
         "close_date",
         "is_active",
@@ -38,9 +35,12 @@ class AccountAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(models.Money)
-class MoneyAdmin(admin.ModelAdmin):
-    inline = [AccountInline, TransactionInline]
-
-
-admin.site.register(models.Transaction)
+@admin.register(models.Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "balance",
+        "transaction_type",
+        "transaction_from_amount",
+        "transaction_from_amount_currency",
+    )
