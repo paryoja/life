@@ -1,33 +1,51 @@
-import graphene
-from graphene_django import DjangoObjectType, fields
+from graphene import ObjectType, Schema, relay
+from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
 
-from .models import Bank, Account
+from .models import Account, Bank, Money, Transaction
 
 
-class BankType(DjangoObjectType):
+class BankNode(DjangoObjectType):
     class Meta:
         model = Bank
-        fields = ("id", "name", "accounts")
+        filter_fields = {"name": ["exact"]}
+        interfaces = (relay.Node,)
 
 
-class AccountType(DjangoObjectType):
+class AccountNode(DjangoObjectType):
     class Meta:
         model = Account
-        fields = ("id", "account_number", "bank")
+        filter_fields = {
+            "account_number": ["exact"],
+            "bank": ["exact"],
+            "is_mine": ["exact"],
+        }
+        interfaces = (relay.Node,)
 
 
-class Query(graphene.ObjectType):
-    all_accounts = graphene.List(AccountType)
-    bank_by_name = graphene.Field(BankType, name=graphene.String(required=True))
-
-    def resolve_all_accounts(root, info):
-        return Account.objects.select_related("bank").all()
-
-    def resolve_bank_by_name(root, info, name):
-        try:
-            return Bank.objects.get(name=name)
-        except Bank.DoesNotExist:
-            return None
+class TransactionNode(DjangoObjectType):
+    class Meta:
+        model = Transaction
+        filter_fields = {"account": ["exact"]}
+        interfaces = (relay.Node,)
 
 
-schema = graphene.Schema(query=Query)
+class MoneyNode(DjangoObjectType):
+    class Meta:
+        model = Money
+        filter_fields = ["amount"]
+        interfaces = (relay.Node,)
+
+
+class Query(ObjectType):
+    all_accounts = DjangoFilterConnectionField(AccountNode)
+    account = relay.Node.Field(AccountNode)
+
+    all_banks = DjangoFilterConnectionField(BankNode)
+    bank = relay.Node.Field(BankNode)
+
+    all_transactions = DjangoFilterConnectionField(TransactionNode)
+    transaction = relay.Node.Field(TransactionNode)
+
+
+schema = Schema(query=Query)

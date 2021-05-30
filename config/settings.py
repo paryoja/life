@@ -40,7 +40,10 @@ INSTALLED_APPS = [
 ]
 
 # Library
-INSTALLED_APPS += ["graphene_django"]
+INSTALLED_APPS += [
+    "graphene_django",
+    "corsheaders",
+]
 
 # My App
 INSTALLED_APPS += ["life.finance.apps.FinanceConfig"]
@@ -48,6 +51,7 @@ INSTALLED_APPS += ["life.finance.apps.FinanceConfig"]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -111,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Seoul"
 
 USE_I18N = True
 
@@ -133,3 +137,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # GRAPHENE
 GRAPHENE = {"SCHEMA": "life.finance.schema.schema"}
+
+# CORS
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://localhost:3000",
+]
