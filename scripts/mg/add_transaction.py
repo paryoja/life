@@ -3,7 +3,7 @@ from datetime import datetime
 import pandas as pd
 
 from life.finance.models import Account, Bank, Transaction
-from scripts.add_closed import format_won
+from scripts.mg.add_closed import format_won
 
 excel_names = [
     "거래내역조회-자유_20210530_052348.xls",

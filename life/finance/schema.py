@@ -1,3 +1,4 @@
+from django_filters import FilterSet, OrderingFilter
 from graphene import ObjectType, Schema, relay
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -26,6 +27,14 @@ class AccountNode(DjangoObjectType):
         return parent.balance.amount
 
 
+class TransactionFilter(FilterSet):
+    class Meta:
+        model = Transaction
+        fields = ("created_at", "account")
+
+    order_by = OrderingFilter(fields=(("created_at", "created_at"),))
+
+
 class TransactionNode(DjangoObjectType):
     class Meta:
         model = Transaction
@@ -49,7 +58,9 @@ class Query(ObjectType):
     all_banks = DjangoFilterConnectionField(BankNode)
     bank = relay.Node.Field(BankNode)
 
-    all_transactions = DjangoFilterConnectionField(TransactionNode)
+    all_transactions = DjangoFilterConnectionField(
+        TransactionNode, filterset_class=TransactionFilter
+    )
     transaction = relay.Node.Field(TransactionNode)
 
 

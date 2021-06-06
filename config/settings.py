@@ -137,7 +137,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # GRAPHENE
-GRAPHENE = {"SCHEMA": "life.finance.schema.schema"}
+GRAPHENE = {
+    "SCHEMA": "life.finance.schema.schema",
+    "RELAY_CONNECTION_MAX_LIMIT": 1000,
+}
 
 # CORS
 CORS_ALLOWED_ORIGINS = [

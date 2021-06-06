@@ -5,6 +5,8 @@ from djmoney.models.fields import MoneyField
 class TransactionTypes(models.TextChoices):
     DEPOSIT = "Deposit"
     WITHDRAW = "Withdraw"
+    BUY = "Buy"
+    SELL = "Sell"
 
 
 class Bank(models.Model):
@@ -22,7 +24,7 @@ class Account(models.Model):
         max_digits=14, decimal_places=2, default_currency="KRW", null=True, blank=True
     )
     balance_updated = models.DateTimeField(null=True, blank=True)
-    open_date = models.DateField()
+    open_date = models.DateField(null=True, blank=True)
     close_date = models.DateField(null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
@@ -48,3 +50,4 @@ class Transaction(models.Model):
         max_digits=14, decimal_places=2, default_currency="KRW", null=True, blank=True
     )
     transaction_type = models.CharField(max_length=10, choices=TransactionTypes.choices)
+    information = models.JSONField(null=True, blank=True)
